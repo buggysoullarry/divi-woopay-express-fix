@@ -1,0 +1,62 @@
+<style>
+    /* Hide specific Divi elements and the contact details section by default */
+    .wcpay-payment-request-wrapper,
+    .et_pb_wc_checkout_order_details #contact_details, .et_pb_wc_checkout_payment_info #contact_details,
+    .et_pb_wc_checkout_shipping #contact_details,
+    .et_pb_wc_checkout_additional_info #contact_details,
+    #wcpay-payment-request-button-separator, #new_woo_express_Form #contact_details {
+        display: none !important;
+    }
+    
+    /* Ensure the moved payment request wrapper and separator are displayed */
+    #new_woo_express_pay .wcpay-payment-request-wrapper, #new_woo_express_pay #wcpay-payment-request-button-separator {
+        display: block !important;
+    }
+</style>
+
+<!-- Placeholder div for moving the payment request elements -->
+<div id="new_woo_express_pay"></div>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        // Select the first instance of the payment request wrapper
+        var div = document.getElementsByClassName("wcpay-payment-request-wrapper")[0];
+        // Select the payment request button separator
+        const orDiv = document.getElementById("wcpay-payment-request-button-separator");
+        // Target div for appending the selected elements
+        const new_woo_express_pay = document.getElementById("new_woo_express_pay");
+
+        // Function to check if the necessary buttons loaded by woopay
+        function checkIfButtonReady(div) {
+            // Select the first button inside the wrapper
+            var button = div.getElementsByTagName('button')[0];
+            // Check if the Stripe payment request button has been injected
+            var wcprb = document.querySelectorAll('div#wcpay-payment-request-button.StripeElement');
+            // Ensure the button exists, is enabled, and the google/apple element is loaded
+            return button && !button.disabled && wcprb.length > 0;
+        }
+
+        // Recursive function to check the readiness of the button, calling itself with a delay
+        function checkButton(tries = 0) {
+   
+            //if woopay button and googe/apple button loaded
+            if (checkIfButtonReady(div)) {
+                // Move the wrapper and separator to the new location
+                new_woo_express_pay.appendChild(div);
+                new_woo_express_pay.appendChild(orDiv);
+            
+            } else if (tries < 10) {
+                setTimeout(function() {
+                    checkButton(tries + 1);
+                }, 1000);
+            } else {
+
+                //woo button never loaded
+                console.log("Button could not be found after 10 seconds.");
+            }
+        }
+
+        // Start the checking process
+        checkButton();
+    });
+</script>

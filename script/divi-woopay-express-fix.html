@@ -42,6 +42,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Check if Woo Express Pay is enabled
         const wooExpressPayWrapper = document.getElementsByClassName("wcpay-payment-request-wrapper");
+        const billingEmailInputs = document.querySelectorAll('input[name="billing_email"]');
         if (wooExpressPayWrapper.length > 0) {
             // Add class to new express wrapper div for styling
             newExpressPayWrapper.classList.add("wcpay-payment-request-wrapper");
@@ -86,5 +87,15 @@
 
             }, 1000);
         }
+    
+   
+// Add event listener to billing email inputs to update hidden inputs
+billingEmailInputs.forEach(input => {
+    input.addEventListener('input', function() {
+        const newValue = this.value;
+        billingEmailInputs.forEach(otherInput => otherInput.value = newValue);
+    });
+});
+   
     });
 </script>
